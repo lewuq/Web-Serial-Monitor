@@ -28,6 +28,32 @@ const MAX_POINTS = 90;
 const PLOT_COLORS = ['#8FC31F', '#00A6A6', '#F4A340', '#B47AE8', '#ED6A5A', '#4C9AFF', '#F2C94C', '#2CCB9B'];
 const now = () => new Date().toLocaleTimeString('en-GB', { hour12: false });
 
+function parseSerialFields(line: string) {
+  const values: number[] = [];
+  const labels: string[] = [];
+  const keyValue = /([A-Za-z_][\w.-]*)\s*=\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)/g;
+  let context = '';
+  let previousEnd = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = keyValue.exec(line)) !== null) {
+    const gap = line.slice(previousEnd, match.index);
+    const group = gap.match(/([A-Za-z_][\w.-]*)\s*(?:\([^)]*\))?\s*$/);
+    if (group) context = group[1].toLowerCase();
+    const baseLabel = context ? `${context}.${match[1]}` : match[1];
+    let label = baseLabel;
+    let suffix = 2;
+    while (labels.includes(label)) label = `${baseLabel}.${suffix++}`;
+    labels.push(label);
+    values.push(Number(match[2]));
+    previousEnd = keyValue.lastIndex;
+  }
+
+  if (values.length) return { values, labels };
+  const plainValues = line.split(/[\s,;]+/).map(Number).filter(Number.isFinite);
+  return { values: plainValues, labels: plainValues.map((_, index) => `Field ${index + 1}`) };
+}
+
 function LivePlot({ points, plots }: { points: DataPoint[]; plots: PlotConfig[] }) {
   const width = 900, height = 280, padding = 22;
   const values = points.flatMap((point) => plots.map((plot) => point.values[plot.field])).filter(Number.isFinite);
@@ -63,7 +89,7 @@ export default function SerialMonitor() {
   const [paused, setPaused] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [points, setPoints] = useState<DataPoint[]>([]);
-  const [detectedFieldCount, setDetectedFieldCount] = useState(0);
+  const [detectedFields, setDetectedFields] = useState<string[]>([]);
   const [plots, setPlots] = useState<PlotConfig[]>([
     { id: 1, name: 'Plot 1', color: PLOT_COLORS[0], field: 0 },
     { id: 2, name: 'Plot 2', color: PLOT_COLORS[1], field: 1 },
@@ -91,11 +117,11 @@ export default function SerialMonitor() {
     if (!clean) return;
     if (showInTerminal) appendLog('RX', clean);
     if (pausedRef.current) return;
-    const numeric = clean.split(/[\s,;]+/).map(Number).filter(Number.isFinite);
-    if (!numeric.length) return;
-    setDetectedFieldCount((current) => Math.max(current, numeric.length));
+    const parsed = parseSerialFields(clean);
+    if (!parsed.values.length) return;
+    setDetectedFields((current) => current.join('\u0000') === parsed.labels.join('\u0000') ? current : parsed.labels);
     pointIndex.current += 1;
-    setPoints((current) => [...current, { index: pointIndex.current, values: numeric }].slice(-MAX_POINTS));
+    setPoints((current) => [...current, { index: pointIndex.current, values: parsed.values }].slice(-MAX_POINTS));
   }, [appendLog]);
 
   const readLoop = useCallback(async (port: BrowserSerialPort) => {
@@ -110,7 +136,7 @@ export default function SerialMonitor() {
         if (!value) continue;
         setBytesReceived((total) => total + value.byteLength);
         partialLine.current += decoder.decode(value, { stream: true });
-        const lines = partialLine.current.split(/\r?\n/);
+        const lines = partialLine.current.split(/\r\n|\n|\r/);
         partialLine.current = lines.pop() ?? '';
         lines.forEach(ingestLine);
       }
@@ -218,7 +244,7 @@ export default function SerialMonitor() {
       <div className="sm-workspace">
         <aside className="sm-sidebar">
           <div className="sm-sidebar-section"><p className="sm-eyebrow">Workspace</p><button className="sm-nav active"><LineChart size={18} />Monitor</button><button className="sm-nav"><TerminalSquare size={18} />Terminal</button><button className="sm-nav"><Gauge size={18} />Dashboard<i>Soon</i></button><button className="sm-nav"><Activity size={18} />IMU view<i>Soon</i></button></div>
-          <div className="sm-sidebar-section grow"><div className="sm-section-row"><p className="sm-eyebrow">Plot bindings</p><Button variant="ghost" size="sm" className="sm-add-plot" onClick={addPlot}><Plus size={14}/>Add</Button></div><p className="sm-channel-help">Plots are optional. Add one, then bind it to any numeric field after data arrives.</p>{plots.map((plot,index) => <div className="sm-channel" key={plot.id}><span style={{background:plot.color}} /><label>{plot.name}</label><select value={plot.field} onChange={(event)=>bindField(plot.id,Number(event.target.value))} disabled={!detectedFieldCount} aria-label={`${plot.name} data field`}>{detectedFieldCount ? Array.from({length:detectedFieldCount},(_,field)=><option value={field} key={field}>Field {field+1}</option>) : <option>Waiting for data</option>}</select><strong>{values[index]}</strong><button className="sm-remove-plot" onClick={()=>removePlot(plot.id)} aria-label={`Remove ${plot.name}`}><Trash2 size={13}/></button></div>)}{!plots.length&&<div className="sm-no-plots">No plots added</div>}</div>
+          <div className="sm-sidebar-section grow"><div className="sm-section-row"><p className="sm-eyebrow">Plot bindings</p><Button variant="ghost" size="sm" className="sm-add-plot" onClick={addPlot}><Plus size={14}/>Add</Button></div><p className="sm-channel-help">Plots are optional. Add one, then bind it to any numeric field after data arrives.</p>{plots.map((plot,index) => <div className="sm-channel" key={plot.id}><span style={{background:plot.color}} /><label>{plot.name}</label><select value={plot.field} onChange={(event)=>bindField(plot.id,Number(event.target.value))} disabled={!detectedFields.length} aria-label={`${plot.name} data field`}>{detectedFields.length ? detectedFields.map((fieldName,field)=><option value={field} key={`${fieldName}-${field}`}>{fieldName}</option>) : <option>Waiting for data</option>}</select><strong>{values[index]}</strong><button className="sm-remove-plot" onClick={()=>removePlot(plot.id)} aria-label={`Remove ${plot.name}`}><Trash2 size={13}/></button></div>)}{!plots.length&&<div className="sm-no-plots">No plots added</div>}</div>
           <div className="sm-device"><Plug size={18} /><div><strong>Web Serial</strong><span>{browserSupported ? 'Available in this browser' : 'Chrome or Edge required'}</span></div></div>
         </aside>
 
@@ -228,7 +254,7 @@ export default function SerialMonitor() {
           <Tabs defaultValue="terminal" className="sm-terminal sm-card">
             <div className="sm-terminal-head"><TabsList><TabsTrigger value="terminal">Terminal</TabsTrigger><TabsTrigger value="format">Data format</TabsTrigger></TabsList><div className="sm-terminal-actions"><span><ArrowDownToLine size={14}/>{bytesReceived.toLocaleString()} bytes</span><Button variant="ghost" size="sm" onClick={()=>setLogs([])}><Eraser size={15}/>Clear</Button></div></div>
             <TabsContent value="terminal" className="sm-terminal-content"><div className="sm-output" ref={terminalRef} aria-live="polite">{logs.map((line)=><div className="sm-log" key={line.id}><time>{line.time}</time><b className={line.direction.toLowerCase()}>{line.direction}</b><code>{line.text}</code></div>)}</div><div className="sm-send"><Input value={message} onChange={(event)=>setMessage(event.target.value)} onKeyDown={(event)=>event.key==='Enter'&&void sendMessage()} placeholder="Type a command and press Enter" aria-label="Serial command"/><Button onClick={sendMessage}><Send size={16}/>Send</Button></div></TabsContent>
-            <TabsContent value="format" className="sm-format"><div><strong>Text / CSV</strong><p>Send one frame per line. Values may be separated by commas, spaces, or semicolons.</p></div><div className="sm-code-example"><span>Arduino / C++ example</span><pre><code>{'float temperature = 24.6;\nfloat voltage = 3.31;\nfloat current = 0.18;\n\nSerial.printf("%.2f,%.2f,%.2f\\n",\n  temperature, voltage, current);'}</code></pre></div><p>Received frame: <code>24.60,3.31,0.18</code>. Bind Plot A, B, and C to Field 1, Field 2, or Field 3 after the first frame arrives.</p></TabsContent>
+            <TabsContent value="format" className="sm-format"><div><strong>Supported text formats</strong><p>Send one frame per line. Plain CSV and labeled key/value logs are both detected automatically.</p></div><div className="sm-code-example"><span>Plain CSV</span><pre><code>{'Serial.printf("%.2f,%.2f,%.2f\\n",\n  temperature, voltage, current);'}</code></pre></div><div className="sm-code-example"><span>Labeled IMU log</span><pre><code>{'Serial.printf("accel(m/s^2) x=%.6f y=%.6f z=%.6f  "\n              "gyro(rad/s) x=%.6f y=%.6f z=%.6f\\n",\n              ax, ay, az, gx, gy, gz);'}</code></pre></div><p>Labeled IMU data creates <code>accel.x</code>, <code>accel.y</code>, <code>accel.z</code>, <code>gyro.x</code>, <code>gyro.y</code>, and <code>gyro.z</code> bindings.</p></TabsContent>
           </Tabs>
           {error&&<div className="sm-error" role="alert">{error}<button onClick={()=>setError('')}>Dismiss</button></div>}
         </section>
