@@ -25,23 +25,24 @@ type DataPoint = { index: number; values: number[] };
 type LogLine = { id: number; time: string; direction: 'RX' | 'TX' | 'SYS'; text: string };
 const MAX_POINTS = 90;
 const CHANNELS = [
-  { name: 'Channel 1', color: '#8FC31F' },
-  { name: 'Channel 2', color: '#00A6A6' },
-  { name: 'Channel 3', color: '#F4A340' },
+  { name: 'Plot A', color: '#8FC31F' },
+  { name: 'Plot B', color: '#00A6A6' },
+  { name: 'Plot C', color: '#F4A340' },
 ];
 const now = () => new Date().toLocaleTimeString('en-GB', { hour12: false });
 
-function LivePlot({ points }: { points: DataPoint[] }) {
+function LivePlot({ points, bindings }: { points: DataPoint[]; bindings: number[] }) {
   const width = 900, height = 280, padding = 22;
-  const values = points.flatMap((point) => point.values.slice(0, 3));
+  const values = points.flatMap((point) => bindings.map((field) => point.values[field])).filter(Number.isFinite);
   const min = values.length ? Math.min(...values) : -1;
   const max = values.length ? Math.max(...values) : 1;
   const range = Math.max(max - min, 1);
   const paths = CHANNELS.map((channel, channelIndex) => {
-    const valid = points.filter((point) => Number.isFinite(point.values[channelIndex]));
+    const fieldIndex = bindings[channelIndex];
+    const valid = points.filter((point) => Number.isFinite(point.values[fieldIndex]));
     const path = valid.map((point, index) => {
       const x = padding + (index / Math.max(valid.length - 1, 1)) * (width - padding * 2);
-      const y = padding + ((max - point.values[channelIndex]) / range) * (height - padding * 2);
+      const y = padding + ((max - point.values[fieldIndex]) / range) * (height - padding * 2);
       return `${index ? 'L' : 'M'} ${x.toFixed(1)} ${y.toFixed(1)}`;
     }).join(' ');
     return { ...channel, path };
@@ -64,6 +65,8 @@ export default function SerialMonitor() {
   const [demo, setDemo] = useState(false);
   const [paused, setPaused] = useState(false);
   const [points, setPoints] = useState<DataPoint[]>([]);
+  const [detectedFieldCount, setDetectedFieldCount] = useState(0);
+  const [bindings, setBindings] = useState([0, 1, 2]);
   const [logs, setLogs] = useState<LogLine[]>([{ id: 1, time: now(), direction: 'SYS', text: 'Ready. Expected format: value1,value2,value3' }]);
   const [message, setMessage] = useState('');
   const [bytesReceived, setBytesReceived] = useState(0);
@@ -74,6 +77,7 @@ export default function SerialMonitor() {
   const partialLine = useRef('');
   const pausedRef = useRef(false);
   const terminalRef = useRef<HTMLDivElement>(null);
+  const demoTimerRef = useRef<number | null>(null);
 
   useEffect(() => { pausedRef.current = paused; }, [paused]);
   const appendLog = useCallback((direction: LogLine['direction'], text: string) => {
@@ -86,6 +90,7 @@ export default function SerialMonitor() {
     if (pausedRef.current) return;
     const numeric = clean.split(/[\s,;]+/).map(Number).filter(Number.isFinite);
     if (!numeric.length) return;
+    setDetectedFieldCount((current) => Math.max(current, numeric.length));
     pointIndex.current += 1;
     setPoints((current) => [...current, { index: pointIndex.current, values: numeric }].slice(-MAX_POINTS));
   }, [appendLog]);
@@ -135,15 +140,26 @@ export default function SerialMonitor() {
   }, [appendLog]);
   useEffect(() => () => { void readerRef.current?.cancel(); }, []);
 
-  useEffect(() => {
-    if (!demo) return;
+  const stopDemo = useCallback((announce = true) => {
+    if (demoTimerRef.current !== null) {
+      window.clearInterval(demoTimerRef.current);
+      demoTimerRef.current = null;
+    }
+    setDemo(false);
+    if (announce) appendLog('SYS', 'Demo stream stopped.');
+  }, [appendLog]);
+  const toggleDemo = () => {
+    if (demo) return stopDemo();
+    setDemo(true);
     appendLog('SYS', 'Demo stream started.');
-    const timer = window.setInterval(() => {
+    demoTimerRef.current = window.setInterval(() => {
       const t = Date.now() / 700;
       ingestLine(`${(Math.sin(t)*42).toFixed(2)},${(Math.cos(t*.72)*31+8).toFixed(2)},${(Math.sin(t*1.4)*18-12).toFixed(2)}`);
     }, 90);
-    return () => window.clearInterval(timer);
-  }, [demo, appendLog, ingestLine]);
+  };
+  useEffect(() => () => {
+    if (demoTimerRef.current !== null) window.clearInterval(demoTimerRef.current);
+  }, []);
   useEffect(() => { terminalRef.current?.scrollTo({ top: terminalRef.current.scrollHeight }); }, [logs]);
   useEffect(() => {
     if (!document.modelContext?.registerTool) return;
@@ -173,7 +189,8 @@ export default function SerialMonitor() {
     finally { writer.releaseLock(); }
   };
   const latest = points.at(-1)?.values ?? [];
-  const values = useMemo(() => latest.slice(0, 3).map((value) => value.toFixed(2)), [latest]);
+  const values = useMemo(() => bindings.map((field) => Number.isFinite(latest[field]) ? latest[field].toFixed(2) : '—'), [latest, bindings]);
+  const bindField = (plotIndex: number, fieldIndex: number) => setBindings((current) => current.map((field, index) => index === plotIndex ? fieldIndex : field));
   const browserSupported = typeof navigator !== 'undefined' && Boolean(navigator.serial);
   const statusText = connected ? 'Connected' : demo ? 'Demo stream' : 'Disconnected';
 
@@ -191,17 +208,17 @@ export default function SerialMonitor() {
       <div className="sm-workspace">
         <aside className="sm-sidebar">
           <div className="sm-sidebar-section"><p className="sm-eyebrow">Workspace</p><button className="sm-nav active"><LineChart size={18} />Monitor</button><button className="sm-nav"><TerminalSquare size={18} />Terminal</button><button className="sm-nav"><Gauge size={18} />Dashboard<i>Soon</i></button><button className="sm-nav"><Activity size={18} />IMU view<i>Soon</i></button></div>
-          <div className="sm-sidebar-section grow"><div className="sm-section-row"><p className="sm-eyebrow">Channels</p><Settings2 size={14} /></div>{CHANNELS.map((channel,index) => <div className="sm-channel" key={channel.name}><span style={{background:channel.color}} /><label>{channel.name}</label><strong>{values[index] ?? '—'}</strong></div>)}</div>
+          <div className="sm-sidebar-section grow"><div className="sm-section-row"><p className="sm-eyebrow">Plot bindings</p><Settings2 size={14} /></div><p className="sm-channel-help">After data arrives, bind each plot to a numeric field.</p>{CHANNELS.map((channel,index) => <div className="sm-channel" key={channel.name}><span style={{background:channel.color}} /><label>{channel.name}</label><select value={bindings[index]} onChange={(event)=>bindField(index,Number(event.target.value))} disabled={!detectedFieldCount} aria-label={`${channel.name} data field`}>{detectedFieldCount ? Array.from({length:detectedFieldCount},(_,field)=><option value={field} key={field}>Field {field+1}</option>) : <option>Waiting for data</option>}</select><strong>{values[index]}</strong></div>)}</div>
           <div className="sm-device"><Plug size={18} /><div><strong>Web Serial</strong><span>{browserSupported ? 'Available in this browser' : 'Chrome or Edge required'}</span></div></div>
         </aside>
 
         <section className="sm-main">
-          <div className="sm-heading"><div><p className="sm-eyebrow">Live data</p><h2>Serial plot</h2></div><div className="sm-actions"><Button variant="outline" size="sm" onClick={() => setDemo((value) => !value)} disabled={connected}>{demo ? <CircleStop size={15}/> : <Play size={15}/>} {demo ? 'Stop demo' : 'Run demo'}</Button><Button variant="outline" size="icon-sm" aria-label={paused?'Resume plot':'Pause plot'} onClick={() => setPaused((value)=>!value)}>{paused?<Play size={15}/>:<Pause size={15}/>}</Button><Button variant="outline" size="icon-sm" aria-label="Clear plot" onClick={()=>setPoints([])}><RotateCcw size={15}/></Button></div></div>
-          <div className="sm-card"><div className="sm-legend">{CHANNELS.map((channel)=><span key={channel.name}><i style={{background:channel.color}}/>{channel.name}</span>)}<span className="samples">{points.length} samples visible</span></div><LivePlot points={points}/></div>
+          <div className="sm-heading"><div><p className="sm-eyebrow">Live data</p><h2>Serial plot</h2></div><div className="sm-actions"><Button variant="outline" size="sm" onClick={toggleDemo} disabled={connected}>{demo ? <CircleStop size={15}/> : <Play size={15}/>} {demo ? 'Stop demo' : 'Run demo'}</Button><Button variant="outline" size="icon-sm" aria-label={paused?'Resume plot':'Pause plot'} onClick={() => setPaused((value)=>!value)}>{paused?<Play size={15}/>:<Pause size={15}/>}</Button><Button variant="outline" size="icon-sm" aria-label="Clear plot" onClick={()=>setPoints([])}><RotateCcw size={15}/></Button></div></div>
+          <div className="sm-card"><div className="sm-legend">{CHANNELS.map((channel,index)=><span key={channel.name}><i style={{background:channel.color}}/>{channel.name} · Field {bindings[index]+1}</span>)}<span className="samples">{points.length} samples visible</span></div><LivePlot points={points} bindings={bindings}/></div>
           <Tabs defaultValue="terminal" className="sm-terminal sm-card">
             <div className="sm-terminal-head"><TabsList><TabsTrigger value="terminal">Terminal</TabsTrigger><TabsTrigger value="format">Data format</TabsTrigger></TabsList><div className="sm-terminal-actions"><span><ArrowDownToLine size={14}/>{bytesReceived.toLocaleString()} bytes</span><Button variant="ghost" size="sm" onClick={()=>setLogs([])}><Eraser size={15}/>Clear</Button></div></div>
             <TabsContent value="terminal" className="sm-terminal-content"><div className="sm-output" ref={terminalRef} aria-live="polite">{logs.map((line)=><div className="sm-log" key={line.id}><time>{line.time}</time><b className={line.direction.toLowerCase()}>{line.direction}</b><code>{line.text}</code></div>)}</div><div className="sm-send"><Input value={message} onChange={(event)=>setMessage(event.target.value)} onKeyDown={(event)=>event.key==='Enter'&&void sendMessage()} placeholder="Type a command and press Enter" aria-label="Serial command"/><Button onClick={sendMessage}><Send size={16}/>Send</Button></div></TabsContent>
-            <TabsContent value="format" className="sm-format"><div><strong>Text / CSV</strong><p>Send one frame per line. Numeric values may be separated by commas, spaces, or semicolons.</p></div><code>12.50,-3.20,86.00</code><p>The first three numeric fields are mapped to the live channels. Configurable field mapping comes next.</p></TabsContent>
+            <TabsContent value="format" className="sm-format"><div><strong>Text / CSV</strong><p>Send one frame per line. Values may be separated by commas, spaces, or semicolons.</p></div><div className="sm-code-example"><span>Arduino / C++ example</span><pre><code>{'float temperature = 24.6;\nfloat voltage = 3.31;\nfloat current = 0.18;\n\nSerial.printf("%.2f,%.2f,%.2f\\n",\n  temperature, voltage, current);'}</code></pre></div><p>Received frame: <code>24.60,3.31,0.18</code>. Bind Plot A, B, and C to Field 1, Field 2, or Field 3 after the first frame arrives.</p></TabsContent>
           </Tabs>
           {error&&<div className="sm-error" role="alert">{error}<button onClick={()=>setError('')}>Dismiss</button></div>}
         </section>
