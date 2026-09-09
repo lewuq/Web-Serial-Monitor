@@ -1,0 +1,233 @@
+# Web Serial Monitor
+
+[中文说明](#中文说明)
+
+Web Serial Monitor is a browser-based serial terminal and real-time data plotting tool. It connects directly to serial devices through the Web Serial API, detects numeric fields in incoming text, and lets you bind any detected field to a plot without depending on a specific microcontroller or development board.
+
+## Features
+
+- Connect to serial devices directly from a supported browser.
+- Select common baud rates from 9,600 to 921,600 baud.
+- View live RX, TX, and system messages in the terminal.
+- Send text commands to the connected device.
+- Plot numeric serial data in real time.
+- Detect and bind an arbitrary number of numeric fields.
+- Add, remove, or automatically add all available plots.
+- Parse plain CSV-style values and labeled key/value logs automatically.
+- Pause or clear the plot without disconnecting the device.
+- Use a built-in demo stream without hardware.
+- Switch between light and dark themes.
+
+Dashboard and dedicated IMU views are planned. The current monitor can already parse and plot accelerometer, gyroscope, and other labeled sensor fields.
+
+## Browser requirements
+
+Web Serial requires a Chromium-based desktop browser, such as Google Chrome or Microsoft Edge. The page must be served from `https://` or `localhost`.
+
+Firefox and Safari do not currently provide the Web Serial API. Serial device access always requires an explicit browser permission from the user.
+
+## Supported data formats
+
+Send one data frame per line. Each frame must end with `\n`, `\r`, or `\r\n`.
+
+### Plain numeric values
+
+Values may be separated by commas, spaces, or semicolons:
+
+```text
+24.50,3.30,0.18
+```
+
+```cpp
+Serial.printf("%.2f,%.2f,%.2f\n", temperature, voltage, current);
+```
+
+The detected fields are named `Field 1`, `Field 2`, `Field 3`, and so on.
+
+### Labeled key/value data
+
+```text
+temperature=24.50 voltage=3.30 current=0.18
+```
+
+Labels become selectable plot bindings automatically.
+
+### Labeled IMU data
+
+```text
+[17:00:39.525] accel(m/s^2) x=-2.076970 y=-5.401797 z=8.956334  gyro(rad/s) x=-0.719293 y=6.750670 z=0.113315
+```
+
+```cpp
+Serial.printf(
+  "accel(m/s^2) x=%.6f y=%.6f z=%.6f  "
+  "gyro(rad/s) x=%.6f y=%.6f z=%.6f\n",
+  ax, ay, az, gx, gy, gz
+);
+```
+
+This format creates the bindings `accel.x`, `accel.y`, `accel.z`, `gyro.x`, `gyro.y`, and `gyro.z`.
+
+## Getting started
+
+### Run locally
+
+Requirements:
+
+- Node.js 22.13 or newer
+- pnpm
+
+```bash
+git clone https://github.com/lewuq/Web-Serial-Monitor.git
+cd Web-Serial-Monitor
+pnpm install
+pnpm dev
+```
+
+Open the local URL shown in the terminal with Chrome or Edge.
+
+### Production build
+
+```bash
+pnpm build
+```
+
+## Usage
+
+1. Open the application in Chrome or Edge.
+2. Select the baud rate used by your device.
+3. Click **Connect device** and choose a serial port in the browser dialog.
+4. Wait for newline-terminated data to arrive.
+5. Use **Add**, **Add all**, or each plot selector to bind detected fields.
+6. Use the terminal input to send a text command when needed.
+7. Click **Disconnect** before unplugging the device.
+
+All serial communication and plotting happen in the browser. The application does not require a device-specific firmware library.
+
+## Development
+
+```bash
+pnpm lint
+pnpm format
+pnpm build
+```
+
+Issues and pull requests are welcome. When reporting a parsing problem, include a short sample of the serial output and the expected field names.
+
+---
+
+## 中文说明
+
+[Back to English](#web-serial-monitor)
+
+Web Serial Monitor 是一个运行在浏览器中的串口终端与实时数据绘图工具。它通过 Web Serial API 直接连接串口设备，自动识别输入文本中的数值字段，并允许用户将任意字段绑定到曲线。项目不依赖特定的单片机、开发板或固件库。
+
+## 功能特性
+
+- 直接从支持 Web Serial 的浏览器连接串口设备。
+- 支持从 9,600 到 921,600 的常用波特率。
+- 在终端中持续查看 RX、TX 和系统消息。
+- 向已连接的设备发送文本命令。
+- 实时绘制串口数值数据。
+- 自动识别任意数量的数值字段并进行绑定。
+- 自由添加、删除曲线，或一次添加全部可用字段。
+- 自动解析普通 CSV 数据和带标签的键值数据。
+- 无需断开设备即可暂停或清空绘图。
+- 无硬件时可使用内置 Demo 数据流。
+- 支持明亮与暗夜主题。
+
+Dashboard 和独立 IMU 视图仍在规划中。当前 Monitor 已经能够解析并绘制加速度计、陀螺仪以及其他带标签的传感器字段。
+
+## 浏览器要求
+
+Web Serial 需要桌面端 Chromium 浏览器，例如 Google Chrome 或 Microsoft Edge。页面必须通过 `https://` 或 `localhost` 提供。
+
+Firefox 和 Safari 目前不提供 Web Serial API。访问串口设备时，浏览器始终会要求用户明确授权。
+
+## 支持的数据格式
+
+每行发送一帧数据，并使用 `\n`、`\r` 或 `\r\n` 结束。
+
+### 普通数值数据
+
+数值可以使用逗号、空格或分号分隔：
+
+```text
+24.50,3.30,0.18
+```
+
+```cpp
+Serial.printf("%.2f,%.2f,%.2f\n", temperature, voltage, current);
+```
+
+识别后的字段名称为 `Field 1`、`Field 2`、`Field 3`，依此类推。
+
+### 带标签的键值数据
+
+```text
+temperature=24.50 voltage=3.30 current=0.18
+```
+
+标签会自动成为可选择的绘图绑定字段。
+
+### 带标签的 IMU 数据
+
+```text
+[17:00:39.525] accel(m/s^2) x=-2.076970 y=-5.401797 z=8.956334  gyro(rad/s) x=-0.719293 y=6.750670 z=0.113315
+```
+
+```cpp
+Serial.printf(
+  "accel(m/s^2) x=%.6f y=%.6f z=%.6f  "
+  "gyro(rad/s) x=%.6f y=%.6f z=%.6f\n",
+  ax, ay, az, gx, gy, gz
+);
+```
+
+该格式会生成 `accel.x`、`accel.y`、`accel.z`、`gyro.x`、`gyro.y` 和 `gyro.z` 六个绑定字段。
+
+## 开始使用
+
+### 本地运行
+
+环境要求：
+
+- Node.js 22.13 或更高版本
+- pnpm
+
+```bash
+git clone https://github.com/lewuq/Web-Serial-Monitor.git
+cd Web-Serial-Monitor
+pnpm install
+pnpm dev
+```
+
+使用 Chrome 或 Edge 打开终端中显示的本地地址。
+
+### 生产构建
+
+```bash
+pnpm build
+```
+
+## 使用方法
+
+1. 使用 Chrome 或 Edge 打开应用。
+2. 选择与设备一致的波特率。
+3. 点击 **Connect device**，并在浏览器弹窗中选择串口。
+4. 等待以换行符结尾的数据到达。
+5. 使用 **Add**、**Add all** 或每条曲线的选择框绑定检测到的字段。
+6. 需要时通过终端输入框发送文本命令。
+7. 拔出设备前点击 **Disconnect**。
+
+所有串口通信和绘图均在浏览器中完成，无需安装针对某款设备的固件库。
+
+## 开发
+
+```bash
+pnpm lint
+pnpm format
+pnpm build
+```
+
+欢迎提交 Issue 和 Pull Request。报告解析问题时，请附上一小段串口输出示例以及期望生成的字段名称。
