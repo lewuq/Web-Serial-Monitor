@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Seeed Studio Serial Monitor',
+  title: 'Web Serial Monitor',
   description: 'A browser-based serial monitor and real-time data workspace.',
 };
 

@@ -269,7 +269,7 @@ export default function SerialMonitor() {
   return (
     <main className={`sm-shell ${darkMode ? 'dark' : ''}`}>
       <header className="sm-topbar">
-        <div className="sm-brand"><div className="sm-brand-mark"><Radio size={20} /></div><div><h1>Seeed Studio Serial Monitor</h1><p>Browser workspace</p></div></div>
+        <div className="sm-brand"><div className="sm-brand-mark"><Radio size={20} /></div><div><h1>Web Serial Monitor</h1><p>Browser workspace</p></div></div>
         <div className="sm-connection-strip">
           <label className="sm-baud"><span>Baud rate</span><select value={baudRate} onChange={(event) => setBaudRate(Number(event.target.value))} disabled={connected}>{[9600,19200,38400,57600,115200,230400,460800,921600].map((rate) => <option key={rate}>{rate}</option>)}</select></label>
           <div className={`sm-status ${connected || demo ? 'online' : ''}`}><span />{statusText}</div>

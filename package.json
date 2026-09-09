@@ -1,5 +1,5 @@
 {
-  "name": "seeed-studio-serial-monitor",
+  "name": "web-serial-monitor",
   "version": "0.1.0",
   "private": true,
   "engines": {
