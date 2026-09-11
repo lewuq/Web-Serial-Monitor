@@ -8,6 +8,7 @@ Web Serial Monitor is a browser-based serial terminal and real-time data plottin
 
 | Version | Updated | Highlights |
 | --- | --- | --- |
+| V0.3.1 | 2026-09-11 | Improved laptop-height responsiveness, kept connection controls visible, and fixed plot, History, and Terminal overlap through viewport-aware sizing. |
 | V0.3 | 2026-09-11 | Refined visual design, flexible Telemetry Studio layouts, resizable and zoomable plots, a 3D Euler-angle IMU, an expanded component library including PID control, and upgraded Terminal data controls. |
 | V0.2 | 2026-09-11 | Telemetry Studio, bilingual UI, light/dark themes, deterministic text parsing, dynamic plots, continuous terminal rendering, and a draggable component canvas. |
 | V0.1 | 2026-09-09 | Initial browser-based serial connection, terminal, and real-time numeric plotting. |

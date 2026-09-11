@@ -101,3 +101,23 @@ button,select,input{font:inherit}
 .sm-pid-card{grid-column:span 1}.sm-pid-controls{display:grid;gap:11px}.sm-pid-controls label{display:grid;gap:6px}.sm-pid-controls label>span{display:flex;align-items:center;justify-content:space-between;color:#708486;font:700 10px var(--font-geist-mono)}.sm-pid-controls b{color:var(--sm-navy);font-weight:700}.sm-shell.dark .sm-terminal-select{color:#b9c9c8;background:#10282e;border-color:#29464d}.sm-shell.dark .sm-send-mode{background:#102a30}.sm-shell.dark .sm-send-mode button.active{color:#dcebc0!important;background:#214239!important}.sm-shell.dark .sm-send-clear{color:#9cafaf!important;border-color:#29464d!important}.sm-shell.dark .sm-pid-controls b{color:#b4d570}
 @media(max-width:900px){.sm-terminal-select{max-width:90px}.sm-terminal-actions{flex-wrap:wrap}.sm-send{grid-template-columns:auto minmax(0,1fr) auto auto!important}}
 @media(max-width:650px){.sm-send{grid-template-columns:minmax(0,1fr) auto auto!important}.sm-send-mode{grid-column:1/-1;justify-self:start}.sm-terminal-select{display:none}}
+
+/* Keep connection controls available and compact the workspace on laptop-height screens. */
+.sm-topbar{position:sticky;top:0;z-index:60}
+@media(min-width:901px) and (max-height:1050px){
+  .sm-workspace{height:calc(100vh - 68px);min-height:0}
+  .sm-sidebar{height:100%;gap:18px;padding-top:18px;padding-bottom:14px;overflow-y:auto}
+  .sm-main{height:100%;gap:12px;padding:18px 22px 22px;overflow-y:auto;scrollbar-gutter:stable}
+  .sm-page-intro h2{font-size:24px}
+  .sm-page-intro>div>p:last-child{margin-top:4px;font-size:12px}
+  .sm-plot-toolbar{min-height:44px}
+  .sm-range-bar{height:36px}
+  .sm-terminal-head{min-height:46px}
+  .sm-output{height:clamp(220px,27vh,285px)}
+  .sm-send{padding:8px 10px}
+}
+@media(min-width:901px) and (max-height:820px){
+  .sm-main{padding-top:13px}
+  .sm-monitor-intro>div>p:last-child{display:none}
+  .sm-output{height:220px}
+}
