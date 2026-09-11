@@ -4,21 +4,39 @@
 
 Web Serial Monitor is a browser-based serial terminal and real-time data plotting tool. It connects directly to serial devices through the Web Serial API, detects numeric fields in incoming text, and lets you bind any detected field to a plot without depending on a specific microcontroller or development board.
 
+## Version history
+
+### V0.2 — 2026-09-11
+
+- Introduced Telemetry Studio, combining live plots, continuous terminal output, and serial commands in one workspace.
+- Added English and Chinese interfaces, light and dark themes, and a refined responsive visual system.
+- Added deterministic parsing for delimited text, named numeric fields, nested JSON numbers, and grouped sensor logs.
+- Added dynamic plot bindings, history navigation, pan and zoom controls, and independent width/height plot resizing.
+- Added a draggable component canvas with Button, 3D Euler IMU, Dashboard, Gauge, Status, Slider, and Numeric Readout examples.
+- Improved terminal buffering and rendering to keep continuous high-rate RX output responsive.
+
+### V0.1 — 2026-09-09
+
+- Initial browser-based Web Serial connection, terminal, and real-time numeric plotting experience.
+
 ## Features
 
 - Connect to serial devices directly from a supported browser.
 - Select common baud rates from 9,600 to 921,600 baud.
 - View live RX, TX, and system messages in the terminal.
 - Send text commands to the connected device.
-- Plot numeric serial data in real time.
+- Plot numeric serial data in real time with zoom, drag-to-pan, and history navigation.
 - Detect and bind an arbitrary number of numeric fields.
 - Add, remove, or automatically add all available plots.
-- Parse plain CSV-style values and labeled key/value logs automatically.
+- Keep continuous terminal output in a bounded buffer, including a live partial-line preview.
+- Parse delimited numbers, labeled key/value logs, grouped sensor logs, and JSON automatically.
 - Pause or clear the plot without disconnecting the device.
 - Use a built-in demo stream without hardware.
+- Preview reusable Button, IMU, Dashboard, Gauge, Status, Slider, and Numeric Readout components.
+- Drag component examples into a custom component canvas.
 - Switch between light and dark themes.
 
-Dashboard and dedicated IMU views are planned. The current monitor can already parse and plot accelerometer, gyroscope, and other labeled sensor fields.
+The component library currently provides interactive examples. Binding every component to custom serial fields is planned for a later release.
 
 ## Browser requirements
 
@@ -51,6 +69,16 @@ temperature=24.50 voltage=3.30 current=0.18
 ```
 
 Labels become selectable plot bindings automatically.
+
+Both `name=value` and `name:value` are supported. Numeric values may be integers, decimals, signed values, or scientific notation.
+
+### JSON numeric data
+
+```json
+{"temp":24,"power":{"voltage":3.3,"current":0.18}}
+```
+
+Nested keys become bindings such as `power.voltage` and `power.current`.
 
 ### Labeled IMU data
 
@@ -122,21 +150,39 @@ Issues and pull requests are welcome. When reporting a parsing problem, include 
 
 Web Serial Monitor 是一个运行在浏览器中的串口终端与实时数据绘图工具。它通过 Web Serial API 直接连接串口设备，自动识别输入文本中的数值字段，并允许用户将任意字段绑定到曲线。项目不依赖特定的单片机、开发板或固件库。
 
+## 版本迭代
+
+### V0.2 — 2026-09-11
+
+- 引入“遥测工作台”，在同一界面中整合实时绘图、持续终端输出和串口命令。
+- 增加中英文界面、明暗主题，并完善响应式视觉设计。
+- 增加确定性文本解析，支持分隔数值、带名称字段、嵌套 JSON 数值和分组传感器日志。
+- 增加动态绘图绑定、历史浏览、平移缩放，以及相互独立的绘图宽度和高度调整。
+- 增加可拖放组件画布，以及 Button、3D 欧拉角 IMU、Dashboard、Gauge、Status、Slider 和 Numeric Readout 示例。
+- 优化终端缓冲与批量渲染，提高持续高频 RX 输出时的页面流畅度。
+
+### V0.1 — 2026-09-09
+
+- 首次提供基于浏览器的 Web Serial 连接、终端和实时数值绘图功能。
+
 ## 功能特性
 
 - 直接从支持 Web Serial 的浏览器连接串口设备。
 - 支持从 9,600 到 921,600 的常用波特率。
 - 在终端中持续查看 RX、TX 和系统消息。
 - 向已连接的设备发送文本命令。
-- 实时绘制串口数值数据。
+- 实时绘制串口数值数据，并支持缩放、拖拽平移和历史浏览。
 - 自动识别任意数量的数值字段并进行绑定。
 - 自由添加、删除曲线，或一次添加全部可用字段。
-- 自动解析普通 CSV 数据和带标签的键值数据。
+- 使用有界缓冲区持续显示终端输出，并显示尚未换行的实时数据片段。
+- 自动解析分隔数值、带标签键值、分组传感器日志和 JSON 数据。
 - 无需断开设备即可暂停或清空绘图。
 - 无硬件时可使用内置 Demo 数据流。
+- 提供 Button、IMU、Dashboard、Gauge、Status、Slider 和 Numeric Readout 组件示例。
+- 支持将组件示例拖入自定义组件画布。
 - 支持明亮与暗夜主题。
 
-Dashboard 和独立 IMU 视图仍在规划中。当前 Monitor 已经能够解析并绘制加速度计、陀螺仪以及其他带标签的传感器字段。
+组件库目前提供可交互示例。将每个组件自由绑定到串口字段的功能计划在后续版本中加入。
 
 ## 浏览器要求
 
@@ -169,6 +215,16 @@ temperature=24.50 voltage=3.30 current=0.18
 ```
 
 标签会自动成为可选择的绘图绑定字段。
+
+同时支持 `name=value` 和 `name:value`。数值可以是整数、小数、带符号数或科学计数法。
+
+### JSON 数值数据
+
+```json
+{"temp":24,"power":{"voltage":3.3,"current":0.18}}
+```
+
+嵌套键会生成 `power.voltage`、`power.current` 这样的绑定名称。
 
 ### 带标签的 IMU 数据
 
