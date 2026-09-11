@@ -1,10 +1,6 @@
 # Web Serial Monitor
 
-<p align="center">
-  <a href="#english">🌐 English</a> | <a href="#中文">中文</a>
-</p>
-
-<a id="english"></a>
+**🌐 [English](#english) | [中文](#中文)**
 
 ## English
 
@@ -140,8 +136,6 @@ pnpm build
 ```
 
 Issues and pull requests are welcome. When reporting a parsing problem, include a short sample of the serial output and the expected field names.
-
-<a id="中文"></a>
 
 ## 中文
 
