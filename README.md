@@ -1,23 +1,20 @@
 # Web Serial Monitor
 
-[中文说明](#中文说明)
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="readme-language" queryString>
+
+<TabItem value="en" label="English" default>
 
 Web Serial Monitor is a browser-based serial terminal and real-time data plotting tool. It connects directly to serial devices through the Web Serial API, detects numeric fields in incoming text, and lets you bind any detected field to a plot without depending on a specific microcontroller or development board.
 
 ## Version history
 
-### V0.2 — 2026-09-11
-
-- Introduced Telemetry Studio, combining live plots, continuous terminal output, and serial commands in one workspace.
-- Added English and Chinese interfaces, light and dark themes, and a refined responsive visual system.
-- Added deterministic parsing for delimited text, named numeric fields, nested JSON numbers, and grouped sensor logs.
-- Added dynamic plot bindings, history navigation, pan and zoom controls, and independent width/height plot resizing.
-- Added a draggable component canvas with Button, 3D Euler IMU, Dashboard, Gauge, Status, Slider, and Numeric Readout examples.
-- Improved terminal buffering and rendering to keep continuous high-rate RX output responsive.
-
-### V0.1 — 2026-09-09
-
-- Initial browser-based Web Serial connection, terminal, and real-time numeric plotting experience.
+| Version | Updated | Highlights |
+| --- | --- | --- |
+| V0.2 | 2026-09-11 | Telemetry Studio, bilingual UI, light/dark themes, deterministic text parsing, dynamic plots, continuous terminal rendering, and a draggable component canvas. |
+| V0.1 | 2026-09-09 | Initial browser-based serial connection, terminal, and real-time numeric plotting. |
 
 ## Features
 
@@ -142,28 +139,18 @@ pnpm build
 
 Issues and pull requests are welcome. When reporting a parsing problem, include a short sample of the serial output and the expected field names.
 
----
+</TabItem>
 
-## 中文说明
-
-[Back to English](#web-serial-monitor)
+<TabItem value="zh" label="中文">
 
 Web Serial Monitor 是一个运行在浏览器中的串口终端与实时数据绘图工具。它通过 Web Serial API 直接连接串口设备，自动识别输入文本中的数值字段，并允许用户将任意字段绑定到曲线。项目不依赖特定的单片机、开发板或固件库。
 
 ## 版本迭代
 
-### V0.2 — 2026-09-11
-
-- 引入“遥测工作台”，在同一界面中整合实时绘图、持续终端输出和串口命令。
-- 增加中英文界面、明暗主题，并完善响应式视觉设计。
-- 增加确定性文本解析，支持分隔数值、带名称字段、嵌套 JSON 数值和分组传感器日志。
-- 增加动态绘图绑定、历史浏览、平移缩放，以及相互独立的绘图宽度和高度调整。
-- 增加可拖放组件画布，以及 Button、3D 欧拉角 IMU、Dashboard、Gauge、Status、Slider 和 Numeric Readout 示例。
-- 优化终端缓冲与批量渲染，提高持续高频 RX 输出时的页面流畅度。
-
-### V0.1 — 2026-09-09
-
-- 首次提供基于浏览器的 Web Serial 连接、终端和实时数值绘图功能。
+| 版本 | 更新日期 | 主要内容 |
+| --- | --- | --- |
+| V0.2 | 2026-09-11 | 遥测工作台、中英文界面、明暗主题、确定性文本解析、动态曲线、持续终端渲染和可拖放组件画布。 |
+| V0.1 | 2026-09-09 | 首次提供基于浏览器的串口连接、终端和实时数值绘图功能。 |
 
 ## 功能特性
 
@@ -287,3 +274,7 @@ pnpm build
 ```
 
 欢迎提交 Issue 和 Pull Request。报告解析问题时，请附上一小段串口输出示例以及期望生成的字段名称。
+
+</TabItem>
+
+</Tabs>
