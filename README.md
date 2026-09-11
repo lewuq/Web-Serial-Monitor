@@ -1,11 +1,12 @@
 # Web Serial Monitor
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+<p align="center">
+  <a href="#english">🌐 English</a> | <a href="#中文">中文</a>
+</p>
 
-<Tabs groupId="readme-language" queryString>
+<a id="english"></a>
 
-<TabItem value="en" label="English" default>
+## English
 
 Web Serial Monitor is a browser-based serial terminal and real-time data plotting tool. It connects directly to serial devices through the Web Serial API, detects numeric fields in incoming text, and lets you bind any detected field to a plot without depending on a specific microcontroller or development board.
 
@@ -13,6 +14,7 @@ Web Serial Monitor is a browser-based serial terminal and real-time data plottin
 
 | Version | Updated | Highlights |
 | --- | --- | --- |
+| V0.3 | 2026-09-11 | Refined visual design, flexible Telemetry Studio layouts, resizable and zoomable plots, a 3D Euler-angle IMU, an expanded component library including PID control, and upgraded Terminal data controls. |
 | V0.2 | 2026-09-11 | Telemetry Studio, bilingual UI, light/dark themes, deterministic text parsing, dynamic plots, continuous terminal rendering, and a draggable component canvas. |
 | V0.1 | 2026-09-09 | Initial browser-based serial connection, terminal, and real-time numeric plotting. |
 
@@ -139,9 +141,9 @@ pnpm build
 
 Issues and pull requests are welcome. When reporting a parsing problem, include a short sample of the serial output and the expected field names.
 
-</TabItem>
+<a id="中文"></a>
 
-<TabItem value="zh" label="中文">
+## 中文
 
 Web Serial Monitor 是一个运行在浏览器中的串口终端与实时数据绘图工具。它通过 Web Serial API 直接连接串口设备，自动识别输入文本中的数值字段，并允许用户将任意字段绑定到曲线。项目不依赖特定的单片机、开发板或固件库。
 
@@ -149,6 +151,7 @@ Web Serial Monitor 是一个运行在浏览器中的串口终端与实时数据�
 
 | 版本 | 更新日期 | 主要内容 |
 | --- | --- | --- |
+| V0.3 | 2026-09-11 | 优化整体视觉质感，扩展遥测工作台布局，支持可缩放与可调整尺寸的绘图，新增 3D 欧拉角 IMU、含 PID 控制器的组件库，以及更完善的终端数据控制。 |
 | V0.2 | 2026-09-11 | 遥测工作台、中英文界面、明暗主题、确定性文本解析、动态曲线、持续终端渲染和可拖放组件画布。 |
 | V0.1 | 2026-09-09 | 首次提供基于浏览器的串口连接、终端和实时数值绘图功能。 |
 
@@ -274,7 +277,3 @@ pnpm build
 ```
 
 欢迎提交 Issue 和 Pull Request。报告解析问题时，请附上一小段串口输出示例以及期望生成的字段名称。
-
-</TabItem>
-
-</Tabs>
