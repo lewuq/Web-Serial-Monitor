@@ -8,6 +8,7 @@ Web Serial Monitor is a browser-based serial terminal and real-time data plottin
 
 | Version | Updated | Highlights |
 | --- | --- | --- |
+| V0.4 | 2026-09-12 | Added an adaptive, resizable workspace for up to three plot/control components, made the terminal fill the available screen area, refined the visual system, stopped Demo output atomically, and added reliable PID command sending. |
 | V0.3.1 | 2026-09-11 | Improved laptop-height responsiveness, kept connection controls visible, and fixed plot, History, and Terminal overlap through viewport-aware sizing. |
 | V0.3 | 2026-09-11 | Refined visual design, flexible Telemetry Studio layouts, resizable and zoomable plots, a 3D Euler-angle IMU, an expanded component library including PID control, and upgraded Terminal data controls. |
 | V0.2 | 2026-09-11 | Telemetry Studio, bilingual UI, light/dark themes, deterministic text parsing, dynamic plots, continuous terminal rendering, and a draggable component canvas. |
@@ -26,8 +27,9 @@ Web Serial Monitor is a browser-based serial terminal and real-time data plottin
 - Parse delimited numbers, labeled key/value logs, grouped sensor logs, and JSON automatically.
 - Pause or clear the plot without disconnecting the device.
 - Use a built-in demo stream without hardware.
-- Preview reusable Button, 3D IMU, Dashboard, Gauge, Status, Slider, PID Controller, and Numeric Readout components.
-- Drag component examples into a custom component canvas.
+- Add reusable Plot, Button, 3D IMU, Dashboard, Gauge, Status, Slider, PID Controller, and Numeric Readout components to one telemetry grid.
+- Drag components from the left library into the telemetry console without leaving the plot and terminal workspace.
+- Tune PID parameters and send `PID P=... I=... D=...` text commands explicitly to the connected device.
 - Switch between light and dark themes.
 
 ## Browser requirements
