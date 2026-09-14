@@ -41,10 +41,16 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p dist/pages
+          cp -a dist/client/. dist/pages/
+          cp -a dist/client/Web-Serial-Monitor/_next dist/pages/_next
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/client
+          path: dist/pages
 
   deploy:
     environment:
