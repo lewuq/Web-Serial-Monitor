@@ -4,16 +4,18 @@
 
 Web Serial Monitor is a browser-based serial terminal and real-time data plotting tool. It connects directly to serial devices through the Web Serial API, detects numeric fields in incoming text, and lets you bind any detected field to a plot without depending on a specific microcontroller or development board.
 
+**Online application:** [https://lewuq.github.io/Web-Serial-Monitor/](https://lewuq.github.io/Web-Serial-Monitor/)
+
 ## Version history
 
 | Version | Updated | Highlights |
 | --- | --- | --- |
-| V0.5.1 | 2026-09-14 | Added a GitHub Pages production deployment workflow and repository-aware static asset paths for the hosted application. |
-| V0.4 | 2026-09-12 | Added an adaptive, resizable workspace for up to three plot/control components, made the terminal fill the available screen area, refined the visual system, stopped Demo output atomically, and added reliable PID command sending. |
+| V0.5.0 | 2026-09-14 | Added a GitHub Pages production deployment workflow and repository-aware static asset paths for the hosted application. |
+| V0.4.0 | 2026-09-12 | Added an adaptive, resizable workspace for up to three plot/control components, made the terminal fill the available screen area, refined the visual system, stopped Demo output atomically, and added reliable PID command sending. |
 | V0.3.1 | 2026-09-11 | Improved laptop-height responsiveness, kept connection controls visible, and fixed plot, History, and Terminal overlap through viewport-aware sizing. |
-| V0.3 | 2026-09-11 | Refined visual design, flexible Telemetry Studio layouts, resizable and zoomable plots, a 3D Euler-angle IMU, an expanded component library including PID control, and upgraded Terminal data controls. |
-| V0.2 | 2026-09-11 | Telemetry Studio, bilingual UI, light/dark themes, deterministic text parsing, dynamic plots, continuous terminal rendering, and a draggable component canvas. |
-| V0.1 | 2026-09-09 | Initial browser-based serial connection, terminal, and real-time numeric plotting. |
+| V0.3.0 | 2026-09-11 | Refined visual design, flexible Telemetry Studio layouts, resizable and zoomable plots, a 3D Euler-angle IMU, an expanded component library including PID control, and upgraded Terminal data controls. |
+| V0.2.0 | 2026-09-11 | Telemetry Studio, bilingual UI, light/dark themes, deterministic text parsing, dynamic plots, continuous terminal rendering, and a draggable component canvas. |
+| V0.1.0 | 2026-09-09 | Initial browser-based serial connection, terminal, and real-time numeric plotting. |
 
 ## Features
 
@@ -113,3 +115,7 @@ pnpm build
 7. Click **Disconnect** before unplugging the device.
 
 All serial communication and plotting happen in the browser. The application does not require a device-specific firmware library.
+
+## License
+
+Source code is available for personal, educational, research, and other non-commercial use under the [Web Serial Monitor Non-Commercial License](LICENSE). Commercial use, sale, paid distribution, commercial hosting, or integration into a commercial product or service requires prior written permission from the copyright holder.

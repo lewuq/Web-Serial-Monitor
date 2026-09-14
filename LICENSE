@@ -1,0 +1,36 @@
+Web Serial Monitor Non-Commercial License 1.0
+
+Copyright (c) 2026 lewuq. All rights reserved.
+
+Permission is granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software") to use, study,
+copy, modify, and redistribute the Software solely for personal, educational,
+research, or other non-commercial purposes, subject to the following terms:
+
+1. Commercial use is prohibited without prior written permission from the
+   copyright holder. Commercial use includes, but is not limited to, selling or
+   licensing the Software, offering it as part of a paid product or service,
+   using it to provide paid services, commercial hosting, and incorporating it
+   into a product or service intended for commercial advantage or monetary
+   compensation.
+
+2. Any copy or substantial portion of the Software must include this license
+   and the above copyright notice.
+
+3. Modified or redistributed versions must clearly state that they have been
+   modified and must remain subject to this license unless the copyright holder
+   provides written permission for different terms.
+
+4. The name of the copyright holder or project may not be used to endorse or
+   promote derived products without prior written permission.
+
+5. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+   COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
+   WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF,
+   OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+For commercial licensing, contact the copyright holder through the repository:
+https://github.com/lewuq/Web-Serial-Monitor
