@@ -10,6 +10,7 @@ Web Serial Monitor is a browser-based serial terminal and real-time data plottin
 
 | Version | Updated | Highlights |
 | --- | --- | --- |
+| V0.5.2 | 2026-09-20 | Clarified component removal and Demo/plot controls, changed plot reset to preserve samples while restoring the default view, improved adaptive 3D IMU sizing, fixed the Demo button layout, and made dark mode the default. |
 | V0.5.1 | 2026-09-18 | Clear plot samples after a page reload or browser-cache restore, and make the reset control clear pending and visible samples while restoring the default live plot view. |
 | V0.5.0 | 2026-09-14 | Added a GitHub Pages production deployment workflow and repository-aware static asset paths for the hosted application. |
 | V0.4.0 | 2026-09-12 | Added an adaptive, resizable workspace for up to three plot/control components, made the terminal fill the available screen area, refined the visual system, stopped Demo output atomically, and added reliable PID command sending. |
