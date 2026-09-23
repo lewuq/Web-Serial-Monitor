@@ -162,7 +162,7 @@ export default function SerialMonitor() {
         partialLine.current += decoder.decode(value, { stream: true });
         const lines = partialLine.current.split(/\r\n|\n|\r/);
         partialLine.current = lines.pop() ?? '';
-        lines.forEach(ingestLine);
+        lines.forEach((line) => ingestLine(line));
       }
     } catch (readError) {
       if (portRef.current) setError(readError instanceof Error ? readError.message : 'Serial read failed.');
