@@ -121,4 +121,4 @@ All serial communication and plotting happen in the browser. The application doe
 
 ## License
 
-Source code is available for personal, educational, research, and other non-commercial use under the [Web Serial Monitor Non-Commercial License](LICENSE). Commercial use, sale, paid distribution, commercial hosting, or integration into a commercial product or service requires prior written permission from the copyright holder.
+This project is licensed under the [MIT License](LICENSE). You may use, copy, modify, distribute, sublicense, and sell copies of the software, including for commercial purposes, provided the copyright and permission notices are included.
