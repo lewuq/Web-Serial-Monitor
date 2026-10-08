@@ -10,6 +10,7 @@ Web Serial Monitor is a browser-based serial terminal and real-time data plottin
 
 | Version | Updated | Highlights |
 | --- | --- | --- |
+| V0.7.0 | 2026-10-08 | Improved 3D orientation field matching and Euler rotation continuity; added degree/radian input selection and visible zoom controls; kept component readings live while plot history is paused or cleared, with a more adaptable narrow-panel layout. |
 | V0.6.0 | 2026-09-23 | Bound telemetry components to detected fields and real serial state; made command widgets send configurable commands; improved serial write/connection coordination and HEX fragment display; added a dedicated Clear plot control and directional three-dot resize handles. |
 | V0.5.2 | 2026-09-20 | Clarified component removal and Demo/plot controls, changed plot reset to preserve samples while restoring the default view, improved adaptive 3D IMU sizing, fixed the Demo button layout, and made dark mode the default. |
 | V0.5.1 | 2026-09-18 | Clear plot samples after a page reload or browser-cache restore, and make the reset control clear pending and visible samples while restoring the default live plot view. |

@@ -357,6 +357,11 @@ body,.sm-shell,button,select,input{font-family:var(--font-geist-sans),-apple-sys
 .sm-shell.dark .sm-console-widget .sm-button-stage>span{color:#c6d5d8;background:#183239;border-color:#315059}
 @media(max-width:560px){.sm-console-widget .sm-button-stage{grid-template-columns:minmax(104px,160px)}}
 
+/* Keep IMU bindings usable when the resizable panel becomes narrow. */
+.sm-console-widget .sm-workspace-imu.compact .sm-workspace-imu-body{grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));align-content:safe center;overflow:auto}
+.sm-euler-bindings{min-width:0;width:100%}
+.sm-euler-bindings .sm-angle-unit{padding-bottom:8px;border-bottom:1px solid var(--sm-line)}
+
 /* Three-dot resize grips: horizontal across vertical splitters, vertical across horizontal splitters. */
 .sm-column-resize-handle:before,.sm-stack-resize-handle:before,.sm-compact-resize-handle:before{width:18px!important;height:18px!important;background-color:transparent!important;background-image:radial-gradient(circle at 3px 9px,#004966 1.5px,transparent 1.7px),radial-gradient(circle at 9px 9px,#004966 1.5px,transparent 1.7px),radial-gradient(circle at 15px 9px,#004966 1.5px,transparent 1.7px)!important;opacity:.78}
 .sm-stack-resize-handle[aria-orientation=horizontal]:before{background-image:radial-gradient(circle at 3px 9px,#004966 1.5px,transparent 1.7px),radial-gradient(circle at 9px 9px,#004966 1.5px,transparent 1.7px),radial-gradient(circle at 15px 9px,#004966 1.5px,transparent 1.7px)!important}
